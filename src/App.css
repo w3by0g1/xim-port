@@ -1,0 +1,93 @@
+@font-face {
+  font-family: "NeueHaasDisplay";
+  src: url("./assets/NeueHaasDisplayLight.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "NeueHaasDisplayMed";
+  src: url("./assets/NHaasGroteskTXPro-65Md.otf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+
+.hero-content {
+  animation: fadeIn 0.5s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 10vh;
+  left: 0;
+  right: 0;
+  bottom: 10vh;
+  display: flex;
+  flex-direction: column; /* optional */
+  justify-content: center; /* vertical centering */
+  align-items: center;     /* horizontal centering */
+}
+.hero-image {
+  
+  width: auto;
+  height: 70vh;
+  display: block;
+  object-fit: cover;
+}
+
+.hero-info {
+  
+  width: auto;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #707070;
+  gap: 0.5rem;
+}
+
+.hero-name {
+  color: #383838;
+  text-transform: uppercase;
+  font-family: "NeueHaasDisplayMed";
+}
+
+.hero-client {
+  color: #7e7e7e;
+  text-transform: uppercase;
+  font-family: "NeueHaasDisplay";
+  font-size: 0.95rem;
+}
+
+.hero {
+  height: 100vh;
+  height: 100dvh;
+}
+
+.works-page {
+  height: 100vh;
+  height: 100dvh;
+}
+
+.gallery {
+  height: 100vh;
+  height: 100dvh;
+}
+
+@media (max-width: 768px) {
+  .hero-image {
+    width: 80vw;
+  }
+
+  .hero-info {
+    width: 80vw;
+    
+  }
+}

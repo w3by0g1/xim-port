@@ -1,0 +1,271 @@
+.gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding-top: 4rem;
+  overflow: hidden;
+  user-select: none;
+}
+
+.gallery-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 62vh;         /* match .gallery-coverflow height */
+}
+
+.gallery-coverflow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;          /* ← was 62vh, now fills stage */
+  perspective: 1200px;
+}
+
+.gallery-item {
+  position: absolute;
+  transition: transform 0.5s ease, opacity 0.5s ease, filter 0.5s ease;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  display: inline-flex;
+  flex-direction: column;
+  overflow: visible;        /* ← ensure info isn't clipped */
+}
+
+
+
+.gallery-item-image {
+  height: 60vh;
+  width: auto;
+  display: block;
+  object-fit: cover;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.05);
+}
+
+.gallery-item.active .gallery-item-image {
+  box-shadow: 0 12px 60px rgba(0, 0, 0, 0.05);
+}
+
+.gallery-info {
+  position: absolute;       /* out of flow, won't affect item height */
+  top: 100%;                /* anchors to the bottom edge of the image */
+  margin-top: 10px;         /* 20px gap below the image */
+  left: 0;
+  width: 100%;
+  font-size: 0.9rem;
+  opacity: 0;
+  animation: infoFadeIn 0.4s ease 0.3s forwards;
+}
+
+@keyframes infoFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.gallery-name {
+  color: #383838;
+  text-transform: uppercase;
+  font-family: "NeueHaasDisplayMed", sans-serif;
+}
+
+.gallery-client {
+  color: #7e7e7e;
+  text-transform: uppercase;
+  font-family: "NeueHaasDisplay", sans-serif;
+  font-size: 0.95rem;
+  margin-left: 10px;
+}
+
+.gallery-controls {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.gallery-arrow {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #999;
+  cursor: pointer;
+  padding: 0.25rem 0.75rem;
+  transition: color 0.2s ease;
+  line-height: 1;
+}
+
+.gallery-arrow:hover:not(:disabled) {
+  color: #222;
+}
+
+.gallery-arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+
+@media screen and (max-width: 768px) {
+  .gallery {
+    padding-top: 6rem;
+    justify-content: flex-start;
+  }
+
+  .gallery-stage {
+    height: 55vh;
+  }
+
+  .gallery-coverflow {
+    perspective: 600px;
+  }
+
+  .gallery-item-image {
+    height: 40vh;
+    max-width: 100vw;
+    object-fit: cover;
+  }
+
+  .gallery-info {
+    font-size: 0.75rem;
+    margin-top: 8px;
+    text-overflow: ellipsis;
+    max-width: 70vw;
+  }
+
+  .gallery-client {
+    font-size: 0.75rem;
+    margin-left: 6px;
+  }
+
+  .gallery-controls {
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .gallery-arrow {
+    font-size: 2.5rem;
+    padding: 0.5rem 1rem;
+    /* Larger tap targets on mobile */
+    min-width: 48px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Smaller phones */
+@media screen and (max-width: 390px) {
+  .gallery-item-image {
+    height: 38vh;
+    max-width: 100vw;
+  }
+
+  .gallery-stage {
+    height: 48vh;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .works-detail {
+    top: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .works-detail-content {
+    flex-direction: column;
+    gap: 0 !important;
+    height: auto;
+    padding: 0;
+  }
+
+  /* Info moves ABOVE image */
+  .works-detail-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .works-detail-image-section {
+    order: 2;
+    width: 100%;
+  }
+
+  .works-detail-info {
+    order: 1;
+    padding: 1.5rem 1.5rem 1rem;
+    gap: 0.4rem;
+    width: 100%;
+  }
+
+  /* Hide the back button on mobile — use nav instead */
+  .works-detail-back {
+    display: none;
+  }
+
+  .works-detail-title {
+    font-size: 1.8rem;
+    line-height: 1.1;
+  }
+
+  .works-detail-meta {
+    font-size: 0.9rem;
+  }
+
+  /* Full width image */
+  .works-detail-image-wrapper {
+    width: 100%;
+  }
+
+  .works-detail-image-slide {
+    width: 100%;
+  }
+
+  .works-detail-image {
+    width: 90vw !important;
+    height: auto !important;
+    max-height: none !important;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Description below image */
+  .works-detail-description {
+    width: 100vw !important;
+    padding: 1.2rem 1.5rem;
+    font-size: 0.9rem;
+    order: 3;
+    
+  }
+
+  /* Prev/next at the very bottom */
+  .works-detail-nav {
+    position: fixed;
+    bottom: 1.5rem;
+    transform: none;
+    font-size: 0.75rem;
+  }
+
+  .works-detail-nav-prev {
+    left: 1rem;
+  }
+
+  .works-detail-nav-next {
+    right: 1rem;
+  }
+
+  /* Image nav arrows */
+  .image-nav-prev { left: 6px; }
+  .image-nav-next { right: 6px; }
+}
