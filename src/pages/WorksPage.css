@@ -23,6 +23,77 @@
   opacity: 0.2;
 }
 
+.works-gallery.pushed-right {
+  transform: translateX(7vw);
+}
+
+/* ---- Inline info panel (left side) ---- */
+.works-inline-info {
+  position: absolute;
+  top: 0;
+  left: 2vw;
+  width: 35vw;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem 3rem;
+  box-sizing: border-box;
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
+  pointer-events: none;
+}
+
+.works-inline-info.visible {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.works-inline-info-back {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+  align-self: flex-start;
+  font-family: "NeueHaasDisplay", sans-serif;
+  transition: color 0.2s ease;
+  margin-bottom: 1rem;
+}
+
+.works-inline-info-back:hover {
+  color: #383838;
+}
+
+.works-inline-info-title {
+  font-family: "NeueHaasDisplayMed", sans-serif;
+  font-size: 2.5rem;
+  font-weight: 500;
+  color: #222;
+  line-height: 1.15;
+  margin: 0 0 0.5rem;
+}
+
+.works-inline-info-meta {
+  font-family: "NeueHaasDisplay", sans-serif;
+  font-size: 0.9rem;
+  color: #888;
+  margin: 0 0 1rem;
+}
+
+.works-inline-info-description {
+  font-family: "NeueHaasDisplayRoman", sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.1;
+  color: #555;
+  margin: 0;
+  -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.5);
+
+}
+
 /* ---- Detail section ---- */
 .works-detail {
   position: absolute;

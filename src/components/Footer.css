@@ -1,9 +1,9 @@
 .footer {
     position: fixed;
-    bottom: 2.5vh;
-    left: 50%;
-    height: 5vh;
-    width: 100px;
+    top: 2.5vh;
+    left: 2.5%;
+    height: 30px;
+    width: 30px;
     transform: translateX(-50%) scale(1);
     z-index: 100;
 
@@ -12,11 +12,10 @@
     justify-content: center;
     overflow: hidden;
 
-    background: rgba(255, 255, 255, 0.2); /* semi-transparent */
+    background: rgba(255, 0, 0, 0.2); /* semi-transparent */
     backdrop-filter: blur(10px);          /* glass blur */
     -webkit-backdrop-filter: blur(4px);  /* for Safari */
     border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border highlight */
-    border-radius: 100px;                  /* pill shape */
     font-family: "NeueHaasDisplayReg", sans-serif;
     font-size: 11px;
     transition: transform 0.3s ease, background 0.3s ease;
@@ -37,7 +36,7 @@
 
 .footer:hover {
     transform: translateX(-50%) scale(1.1);
-    background: rgba(255, 255, 255, 0.1); /* slightly stronger on hover */
+    background: rgba(255, 0, 0, 0.3); /* slightly stronger on hover */
 }
 
 @media (hover: none) and (pointer: coarse) {

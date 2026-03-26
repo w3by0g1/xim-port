@@ -67,7 +67,7 @@ function Footer() {
 
   return (
     <a className="footer" onClick={() => navigate("/")}>
-      <span>XIM ILUSTRA</span>
+      <span>XIM</span>
     </a>
   );
 }

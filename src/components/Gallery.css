@@ -38,10 +38,18 @@
   overflow: visible;        /* ← ensure info isn't clipped */
 }
 
-
+.gallery-item-frost {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
 
 .gallery-item-image {
-  height: 60vh;
+  height: 80vh;
   width: auto;
   display: block;
   object-fit: cover;
@@ -83,7 +91,7 @@
   text-transform: uppercase;
   font-family: "NeueHaasDisplay", sans-serif;
   font-size: 0.95rem;
-  margin-left: 10px;
+  margin-left: 5px;
 }
 
 .gallery-controls {

@@ -6,3 +6,13 @@
   .hero.fade-out {
     opacity: 0;
   }
+
+  .hero-content.hero-visible {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+
+  .hero-content.hero-hidden {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }

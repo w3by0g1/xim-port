@@ -13,6 +13,7 @@ function WorksPage() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedSlug, setSelectedSlug] = useState(slug || null);
   const [transitioning, setTransitioning] = useState(!!slug);
+  const [inlineSelected, setInlineSelected] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState(null);
   const [pieceSlideDirection, setPieceSlideDirection] = useState(null);
@@ -73,6 +74,7 @@ function WorksPage() {
     setSelectedSlug(null);
     setImageIndex(0);
     setTransitioning(false);
+    setInlineSelected(false);
   }, [category]);
 
   useEffect(() => {
@@ -232,11 +234,11 @@ function WorksPage() {
   return (
     <div className="works-page">
       <div
-        className={`works-gallery ${transitioning ? "pushed-up" : ""}`}
+        className={`works-gallery ${transitioning ? "pushed-up" : ""} ${inlineSelected ? "pushed-right" : ""}`}
         ref={galleryRef}
       >
         <div className="gallery-coverflow">
-          {filtered.map((piece, index) => {
+          {[...filtered].reverse().map((piece, index) => {
             const offset = index - activeIndex;
             const isActive = offset === 0;
             const absOffset = Math.abs(offset);
@@ -250,10 +252,13 @@ function WorksPage() {
                     ? "translateX(0) scale(1) rotateY(0deg)"
                     : `translateX(${clampedOffset * 220}px) scale(${1 - absOffset * 0.12}) rotateY(${clampedOffset * -35}deg)`,
                   zIndex: filtered.length - absOffset,
-                  transition: "transform 0.5s ease, opacity 0.5s ease",
+                  filter: isActive
+                    ? "opacity(1)"
+                    : `opacity(${Math.max(0, 1 - absOffset * 0.31)})`,
+                  transition: "transform 0.5s ease, filter 0.5s ease",
                 }}
                 onClick={() => {
-                  if (isActive) navigate(`/works/${category}/${piece.slug}`);
+                  if (isActive) setInlineSelected((prev) => !prev);
                   else setActiveIndex(index);
                 }}
               >
@@ -263,12 +268,22 @@ function WorksPage() {
                   className="gallery-item-image"
                   draggable={false}
                 />
-                {isActive && !selectedSlug && (
+                {!isActive && (
+                  <div
+                    className="gallery-item-frost"
+                    style={{
+                      opacity: Math.min(absOffset * 0.3, 0.7),
+                    }}
+                  />
+                )}
+                {isActive && !selectedSlug && !inlineSelected && (
                   <div key={piece.id} className="gallery-info">
                     <span className="gallery-name">{piece.name}</span>
-                    <span className="gallery-client">
-                      &nbsp;FOR {piece.client}
-                    </span>
+                    {piece.client != null && (
+                      <span className="gallery-client">
+                        &nbsp;FOR {piece.client}
+                      </span>
+                    )}
                   </div>
                 )}
               </div>
@@ -276,6 +291,35 @@ function WorksPage() {
           })}
         </div>
       </div>
+
+      {(() => {
+        const reversedFiltered = [...filtered].reverse();
+        const activePiece = reversedFiltered[activeIndex];
+        if (!activePiece) return null;
+        return (
+          <div
+            className={`works-inline-info ${inlineSelected ? "visible" : ""}`}
+          >
+            <button
+              className="works-inline-info-back"
+              onClick={() => setInlineSelected(false)}
+            >
+              &larr; back
+            </button>
+            <h1 className="works-inline-info-title">{activePiece.name}</h1>
+            {activePiece.client != null ? (
+              <p className="works-inline-info-meta">
+                {activePiece.medium}, for {activePiece.client}
+              </p>
+            ) : (
+              <p className="works-inline-info-meta">{activePiece.medium}</p>
+            )}
+            <p className="works-inline-info-description">
+              {activePiece.description}
+            </p>
+          </div>
+        );
+      })()}
 
       {selectedSlug &&
         selectedPiece &&
@@ -359,10 +403,12 @@ function WorksPage() {
                       &larr; back
                     </button>
                     <h1 className="works-detail-title">{selectedPiece.name}</h1>
-                    <p className="works-detail-meta">
-                      ({selectedPiece.medium})<br />
-                      For {selectedPiece.client}
-                    </p>
+                    {selectedPiece.client != null && (
+                      <p className="works-detail-meta">
+                        ({selectedPiece.medium})<br />
+                        For {selectedPiece.client}
+                      </p>
+                    )}
                   </div>
 
                   <p className="works-detail-description">

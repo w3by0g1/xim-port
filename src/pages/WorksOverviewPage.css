@@ -1,0 +1,128 @@
+.works-overview {
+  display: flex;
+  gap: 4rem;
+  padding: 0rem 3rem 0rem;
+  height: 100vh;
+  height: 100dvh;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.works-overview-column {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+}
+
+.works-overview-column::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 10rem;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 30%, transparent);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.works-overview-heading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  font-family: "NeueHaasDisplayMed", sans-serif;
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 500;
+  color: rgba(54, 54, 54, 0.7);
+  cursor: pointer;
+  margin: 0;
+  pointer-events: auto;
+  
+  -webkit-text-stroke: 0.5px rgba(140, 140, 140, 0.5);
+  transition: color 0.3s ease, -webkit-text-stroke 0.3s ease;
+}
+
+.works-overview-heading:hover {
+  color: rgb(255, 0, 0);
+  -webkit-text-stroke: 0.5px rgb(255, 0, 0);
+}
+
+.works-overview-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-right: 0.5rem;
+  padding-bottom: 2rem;
+}
+
+.works-overview-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.works-overview-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.works-overview-card {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: opacity 0.2s ease;
+}
+
+.works-overview-image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.6);
+  transition: filter 0.3s ease, opacity 0.3s ease;
+  opacity: 0.7;
+}
+
+.works-overview-card:hover .works-overview-image {
+  filter: saturate(1);
+  opacity: 1;
+
+}
+
+.works-overview-label {
+  font-family: "NeueHaasDisplay", sans-serif;
+  font-size: 0.85rem;
+  color: #555;
+  padding-left: 0.25rem;
+}
+
+/* ---- Mobile ---- */
+@media screen and (max-width: 768px) {
+  .works-overview {
+    flex-direction: column;
+    padding: 10vh 1.25rem 1.25rem;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-y: auto;
+    gap: 2.5rem;
+  }
+
+  .works-overview-column {
+    height: auto;
+  }
+
+  .works-overview-scroll {
+    overflow-y: visible;
+    padding-right: 0;
+    padding-bottom: 0;
+  }
+}

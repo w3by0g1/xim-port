@@ -80,16 +80,16 @@ function Header() {
           className="nav-link"
           onClick={(e) => {
             e.preventDefault();
-            setView("works");
+            navigate("/works");
           }}
         >
-          Work
+          work
         </a>
         <a href="#about" className="nav-link">
-          About
+          about
         </a>
         <a className="nav-link" href="mailto:ximilustra@gmail.com">
-          Contact
+          contact
         </a>
       </nav>
       <nav
