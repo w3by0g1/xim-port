@@ -25,12 +25,41 @@
   height: 100%;
 }
 
+.detail-image-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
 .detail-image {
   height: 100%;
   width: auto;
   max-width: 50vw;
   display: block;
   object-fit: cover;
+}
+
+.detail-image-nav {
+  background: none;
+  border: none;
+  color: #bbb;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.4rem 0.6rem;
+  line-height: 1;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.detail-image-nav:hover:not(:disabled) {
+  color: #383838;
+}
+
+.detail-image-nav:disabled {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .detail-dots {

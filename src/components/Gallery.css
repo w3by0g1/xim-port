@@ -60,6 +60,15 @@
   box-shadow: 0 12px 60px rgba(0, 0, 0, 0.05);
 }
 
+.gallery-item-image-fade {
+  animation: galleryImgFadeIn 0.3s ease forwards;
+}
+
+@keyframes galleryImgFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 .gallery-info {
   position: absolute;       /* out of flow, won't affect item height */
   top: 100%;                /* anchors to the bottom edge of the image */

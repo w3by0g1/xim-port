@@ -1,5 +1,11 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+  useRef,
+} from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useArtPieces } from "../hooks/useArtPieces";
 import "../components/Gallery.css";
 import "./WorksPage.css";
@@ -8,6 +14,7 @@ import selectIcon from "../assets/down arrow.svg";
 function WorksPage() {
   const { category, slug } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { artPieces, loading } = useArtPieces();
   const filtered = artPieces.filter((p) => p.category === category);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -17,6 +24,28 @@ function WorksPage() {
   const [imageIndex, setImageIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState(null);
   const [pieceSlideDirection, setPieceSlideDirection] = useState(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxClosing, setLightboxClosing] = useState(false);
+  const [lightboxRect, setLightboxRect] = useState(null);
+  const lightboxImgRef = useRef(null);
+
+  useLayoutEffect(() => {
+    if (!lightboxOpen || !lightboxImgRef.current || !lightboxRect) return;
+    const img = lightboxImgRef.current;
+    const finalRect = img.getBoundingClientRect();
+    const scaleX = lightboxRect.width / finalRect.width;
+    const scaleY = lightboxRect.height / finalRect.height;
+    const dx =
+      lightboxRect.left + lightboxRect.width / 2 - window.innerWidth / 2;
+    const dy =
+      lightboxRect.top + lightboxRect.height / 2 - window.innerHeight / 2;
+    img.style.transition = "none";
+    img.style.transform = `translate(${dx}px, ${dy}px) scale(${scaleX}, ${scaleY})`;
+    requestAnimationFrame(() => {
+      img.style.transition = "transform 0.45s cubic-bezier(0.2, 0, 0.2, 1)";
+      img.style.transform = "translate(0, 0) scale(1)";
+    });
+  }, [lightboxOpen, lightboxRect]);
 
   const detailScrollRef = useRef(null);
   const detailSwipeRef = useRef(null);
@@ -63,6 +92,16 @@ function WorksPage() {
         } else {
           navigate(`/works/${category}`, { replace: true });
         }
+      } else if (location.state?.activeSlug) {
+        const reversedFiltered = [...filtered].reverse();
+        const index = reversedFiltered.findIndex(
+          (p) => p.slug === location.state.activeSlug,
+        );
+        if (index >= 0) {
+          setActiveIndex(index);
+          setInlineSelected(true);
+        }
+        navigate(location.pathname, { replace: true, state: {} });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,6 +153,37 @@ function WorksPage() {
     if (selectedSlug) navigate(`/works/${category}`);
     else navigate("/");
   }, [selectedSlug, category, navigate]);
+
+  const closeLightbox = useCallback(() => {
+    if (!lightboxImgRef.current || !lightboxRect) {
+      setLightboxOpen(false);
+      return;
+    }
+    const img = lightboxImgRef.current;
+    const finalRect = img.getBoundingClientRect();
+    const scaleX = lightboxRect.width / finalRect.width;
+    const scaleY = lightboxRect.height / finalRect.height;
+    const dx =
+      lightboxRect.left + lightboxRect.width / 2 - window.innerWidth / 2;
+    const dy =
+      lightboxRect.top + lightboxRect.height / 2 - window.innerHeight / 2;
+    img.style.transition = "transform 0.4s cubic-bezier(0.2, 0, 0.2, 1)";
+    img.style.transform = `translate(${dx}px, ${dy}px) scale(${scaleX}, ${scaleY})`;
+    setLightboxClosing(true);
+    setTimeout(() => {
+      setLightboxOpen(false);
+      setLightboxClosing(false);
+    }, 420);
+  }, [lightboxRect]);
+
+  const closeInline = useCallback(() => {
+    if (imageIndex > 0) {
+      setImageIndex(0);
+      setTimeout(() => setInlineSelected(false), 320);
+    } else {
+      setInlineSelected(false);
+    }
+  }, [imageIndex]);
 
   const goImagePrev = () => {
     setSlideDirection("right");
@@ -198,13 +268,17 @@ function WorksPage() {
   // --- Keyboard ---
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "ArrowRight") goNext();
-      if (e.key === "ArrowLeft") goPrev();
-      if (e.key === "Escape") handleBack();
+      if (e.key === "Escape") {
+        if (lightboxOpen) {
+          closeLightbox();
+          return;
+        }
+        handleBack();
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [goNext, goPrev, handleBack]);
+  }, [handleBack, lightboxOpen, closeLightbox]);
 
   // --- Guards ---
   if (loading) return <div className="works-page" />;
@@ -253,21 +327,78 @@ function WorksPage() {
                     : `translateX(${clampedOffset * 220}px) scale(${1 - absOffset * 0.12}) rotateY(${clampedOffset * -35}deg)`,
                   zIndex: filtered.length - absOffset,
                   filter: isActive
-                    ? "opacity(1)"
+                    ? `opacity(${lightboxOpen ? 0 : 1})`
                     : `opacity(${Math.max(0, 1 - absOffset * 0.31)})`,
-                  transition: "transform 0.5s ease, filter 0.5s ease",
+                  transition: lightboxOpen || lightboxClosing ? "transform 0.5s ease" : "transform 0.5s ease, filter 0.5s ease",
                 }}
                 onClick={() => {
-                  if (isActive) setInlineSelected((prev) => !prev);
-                  else setActiveIndex(index);
+                  if (isActive) {
+                    if (inlineSelected) closeInline();
+                    else setInlineSelected(true);
+                  } else {
+                    setActiveIndex(index);
+                    setImageIndex(0);
+                    setInlineSelected(false);
+                  }
                 }}
               >
                 <img
-                  src={getImage(piece)}
+                  key={imageIndex}
+                  src={
+                    isActive && inlineSelected
+                      ? (piece.images?.[imageIndex] ?? getImage(piece))
+                      : getImage(piece)
+                  }
                   alt={piece.name}
-                  className="gallery-item-image"
+                  className={`gallery-item-image${isActive && inlineSelected ? " gallery-item-image-fade" : ""}`}
                   draggable={false}
+                  onClick={
+                    isActive && inlineSelected
+                      ? (e) => {
+                          e.stopPropagation();
+                          setLightboxRect(
+                            e.currentTarget.getBoundingClientRect(),
+                          );
+                          setLightboxOpen(true);
+                        }
+                      : undefined
+                  }
+                  style={
+                    isActive && inlineSelected
+                      ? { cursor: "zoom-in" }
+                      : undefined
+                  }
                 />
+                {isActive &&
+                  inlineSelected &&
+                  (piece.images?.length ?? 0) > 1 && (
+                    <>
+                      <button
+                        className="inline-img-nav inline-img-nav-up"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setImageIndex((i) => Math.max(0, i - 1));
+                        }}
+                        disabled={imageIndex === 0}
+                        aria-label="Previous image"
+                      >
+                        ↑
+                      </button>
+                      <button
+                        className="inline-img-nav inline-img-nav-down"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setImageIndex((i) =>
+                            Math.min((piece.images?.length ?? 1) - 1, i + 1),
+                          );
+                        }}
+                        disabled={imageIndex >= (piece.images?.length ?? 1) - 1}
+                        aria-label="Next image"
+                      >
+                        ↓
+                      </button>
+                    </>
+                  )}
                 {!isActive && (
                   <div
                     className="gallery-item-frost"
@@ -300,10 +431,7 @@ function WorksPage() {
           <div
             className={`works-inline-info ${inlineSelected ? "visible" : ""}`}
           >
-            <button
-              className="works-inline-info-back"
-              onClick={() => setInlineSelected(false)}
-            >
+            <button className="works-inline-info-back" onClick={closeInline}>
               &larr; back
             </button>
             <h1 className="works-inline-info-title">{activePiece.name}</h1>
@@ -452,6 +580,28 @@ function WorksPage() {
           </div>
         </>
       )}
+
+      {lightboxOpen &&
+        (() => {
+          const reversedFiltered = [...filtered].reverse();
+          const activePiece = reversedFiltered[activeIndex];
+          const imgs = activePiece?.images ?? [];
+          return (
+            <div
+              className={`lightbox${lightboxClosing ? " lightbox-closing" : ""}`}
+              onClick={closeLightbox}
+            >
+              <img
+                ref={lightboxImgRef}
+                className="lightbox-image"
+                src={imgs[imageIndex] ?? getImage(activePiece)}
+                alt={activePiece?.name}
+                draggable={false}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          );
+        })()}
     </div>
   );
 }

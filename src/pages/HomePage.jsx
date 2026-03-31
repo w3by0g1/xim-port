@@ -50,7 +50,7 @@ function HomePage() {
     clearInterval(timerRef.current);
     setIsFading(true);
     setTimeout(() => {
-      navigate(`/works/${currentPiece.category}/${currentPiece.slug}`);
+      navigate(`/works/${currentPiece.category}`, { state: { activeSlug: currentPiece.slug } });
     }, 400);
   };
 
